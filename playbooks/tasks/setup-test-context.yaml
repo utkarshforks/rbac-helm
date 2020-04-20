@@ -1,0 +1,37 @@
+---
+# Copyright 2020 VEXXHOST, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Create ServiceAccount
+  shell: |
+    cat <<EOF | kubectl apply -f-
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: test-member
+    EOF
+
+- name: Get secret name
+  shell: kubectl get sa/test-member -ojsonpath='{.secrets[0].name}'
+  register: _kubectl_get_sa
+
+- name: Get account token
+  shell: kubectl get secret/{{ _kubectl_get_sa.stdout }} -ojsonpath='{.data.token}' | base64 --decode
+  register: _token
+
+- name: Create credentials
+  shell: kubectl config set-credentials test-member --token={{ _token.stdout }}
+
+- name: Create test context
+  shell: kubectl config set-context test --cluster=minikube --user=test-member

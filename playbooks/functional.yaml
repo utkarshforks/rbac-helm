@@ -1,0 +1,50 @@
+---
+# Copyright 2020 VEXXHOST, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- hosts: all
+  roles:
+    - name: helm-template
+      helm_release_name: rbac
+      helm_chart: charts/rbac
+      helm_wait_for_pods: false
+      helm_values_file: charts/rbac/test-values.yaml
+  tasks:
+    - import_tasks: tasks/setup-test-context.yaml
+
+    # List and get nodes
+    - name: Ensure listing nodes works
+      shell: kubectl --context=test get nodes
+    - name: Ensure getting a node works
+      shell: kubectl --context=test get $(kubectl get nodes -oname | head -1)
+
+    # List and get applications
+    - name: Ensure listing applications works
+      shell: kubectl --context=test get {{ item }}
+      loop:
+        - daemonsets
+        - deployments
+        - replicasets
+        - statefulsets
+    # TODO: Get applications
+
+    # List and get pods
+    - name: Ensure listing pods works
+      shell: kubectl --context=test -n kube-system get pods
+    - name: Ensure getting a pod works
+      shell: kubectl --context=test -n kube-system get $(kubectl -n kube-system get pods -oname | head -1)
+
+    # View logs for pods
+    - name: Ensure getting logs for a pod works
+      shell: kubectl --context=test -n kube-system logs $(kubectl -n kube-system get pods -oname | head -1)
