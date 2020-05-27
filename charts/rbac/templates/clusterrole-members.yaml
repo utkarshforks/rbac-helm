@@ -18,9 +18,9 @@ kind: ClusterRole
 metadata:
   name: rbac-members
 rules:
-# List and get nodes
+# List and get nodes & pods & pod logs
 - apiGroups: [""]
-  resources: ["nodes"]
+  resources: ["nodes", "pods", "pods/log"]
   verbs: ["get", "list"]
 # List all get applications
 - apiGroups: ["apps"]
@@ -28,12 +28,9 @@ rules:
   verbs: ["get", "list"]
 # List and get hpa
 - apiGroups: ["autoscaling"]
-  resources: ["horizontalpodautoscaler"]
+  resources: ["horizontalpodautoscalers"]
   verbs: ["get", "list"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list"]
-# View logs for pods
-- apiGroups: [""]
-  resources: ["pods/log"]
+# View resource usage for nodes and pods
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
   verbs: ["get", "list"]

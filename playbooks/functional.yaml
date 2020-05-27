@@ -14,12 +14,34 @@
 # limitations under the License.
 
 - hosts: all
+  pre_tasks:
+    - name: Deploy a hpa for test
+      shell: |
+        cat <<EOF | kubectl apply -f-
+        apiVersion: autoscaling/v1
+        kind: HorizontalPodAutoscaler
+        metadata:
+          name: test
+          namespace: kube-system
+        spec:
+          scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: test
+          minReplicas: 1
+          maxReplicas: 3
+          targetCPUUtilizationPercentage: 90
+
   roles:
     - name: helm-template
       helm_release_name: rbac
       helm_chart: charts/rbac
       helm_wait_for_pods: false
       helm_values_file: charts/rbac/test-values.yaml
+    - name: wait-for-pods
+      vars:
+        wait_for_pods_namespace: kube-system
+
   tasks:
     - import_tasks: tasks/setup-test-context.yaml
 
@@ -48,3 +70,37 @@
     # View logs for pods
     - name: Ensure getting logs for a pod works
       shell: kubectl --context=test -n kube-system logs $(kubectl -n kube-system get pods -oname | head -1)
+
+    # List and get hpas
+    - name: Ensure listing hpas works
+      shell: kubectl --context=test -n kube-system get hpa
+    - name: Ensure getting a hpa works
+      shell: kubectl --context=test -n kube-system get hpa test
+
+    # List and get metrics for nodes
+    - name: Ensure listing resources of nodes
+      command: kubectl --context=test top nodes
+      register: _nodes_metrics
+      until: _nodes_metrics is success
+      retries: 60
+      delay: 5
+    - name: Ensure getting resources of a node
+      shell: kubectl --context=test top node $(kubectl get nodes --no-headers=true -o=custom-columns='name:metadata.name' | head -1)
+      register: _node_metrics
+      until: _node_metrics is success
+      retries: 60
+      delay: 5
+
+    # List and get metrics for pods
+    - name: Ensure listing resources for pods in a namespace
+      shell: kubectl --context=test -n kube-system top pods
+      register: _pods_metrics
+      until: _pods_metrics is success
+      retries: 60
+      delay: 5
+    - name: Ensure getting resources for a pod
+      shell: kubectl --context=test -n kube-system top pod $(kubectl -n kube-system --no-headers=true get pods -o=custom-columns='name:metadata.name' | head -1)
+      register: _pod_metrics
+      until: _pod_metrics is success
+      retries: 60
+      delay: 5

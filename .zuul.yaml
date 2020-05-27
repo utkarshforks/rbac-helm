@@ -17,6 +17,10 @@
     name: rbac-helm-functional
     parent: apply-helm-charts
     run: playbooks/functional.yaml
+    vars:
+      ensure_kubernetes_minikube_addons: [metrics-server]
+      minikube_dns_resolvers: [1.1.1.1, 8.8.8.8]
+      collect_kubernetes_logs_namespace: kube-system
 
 - project:
     check:
