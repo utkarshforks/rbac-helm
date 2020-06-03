@@ -77,6 +77,18 @@
     - name: Ensure getting a hpa works
       shell: kubectl --context=test -n kube-system get hpa test
 
+    # List and get pvcs
+    - name: Ensure listing pvcs
+      shell: kubectl --context=test -n kube-system get pvc
+
+    # List and get pvs
+    - name: Ensure listing pvs
+      shell: kubectl --context=test get pv
+
+    # List and get storageclasses
+    - name: Ensure listing sc
+      shell: kubectl --context=test get sc
+
     # List and get metrics for nodes
     - name: Ensure listing resources of nodes
       command: kubectl --context=test top nodes
