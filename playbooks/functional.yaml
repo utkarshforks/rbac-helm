@@ -116,3 +116,9 @@
       until: _pod_metrics is success
       retries: 60
       delay: 5
+
+    # List and get namespaces
+    - name: Ensure listing namespaces works
+      shell: kubectl --context=test get namespace
+    - name: Ensure getting a namespace works
+      shell: kubectl --context=test get namespace default
