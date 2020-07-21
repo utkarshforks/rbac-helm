@@ -31,7 +31,9 @@
           minReplicas: 1
           maxReplicas: 3
           targetCPUUtilizationPercentage: 90
-
+    - name: Deploy cert-manager
+      shell: |
+        kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.2/cert-manager.yaml
   roles:
     - name: helm-template
       helm_release_name: rbac
@@ -122,3 +124,11 @@
       shell: kubectl --context=test get namespace
     - name: Ensure getting a namespace works
       shell: kubectl --context=test get namespace default
+
+    # List and get certificates, orders, and challenges
+    - name: Ensure listing certificates works
+      shell: kubectl --context=test get {{ item }}
+      loop:
+        - certificates
+        - orders
+        - challenges

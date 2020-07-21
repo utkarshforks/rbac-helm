@@ -30,6 +30,14 @@ rules:
 - apiGroups: ["autoscaling"]
   resources: ["horizontalpodautoscalers"]
   verbs: ["get", "list"]
+# View orders and challenges
+- apiGroups: ["acme.cert-manager.io"]
+  resources: ["challenges", "orders"]
+  verbs: ["get", "list"]
+# View certificates
+- apiGroups: ["cert-manager.io"]
+  resources: ["certificates"]
+  verbs: ["get", "list"]
 # View resource usage for nodes and pods
 - apiGroups: ["metrics.k8s.io"]
   resources: ["nodes", "pods"]
