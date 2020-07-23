@@ -18,9 +18,9 @@ kind: ClusterRole
 metadata:
   name: rbac-members
 rules:
-# List and get pv & pvc and namespaces, nodes & pods & pod logs
+# List and get configmap, pv & pvc and namespaces, nodes & pods & pod logs
 - apiGroups: [""]
-  resources: ["nodes", "namespaces", "persistentvolumeclaims", "persistentvolumes", "pods", "pods/log"]
+  resources: ["configmaps", "nodes", "namespaces", "persistentvolumeclaims", "persistentvolumes", "pods", "pods/log"]
   verbs: ["get", "list"]
 # List all get applications
 - apiGroups: ["apps"]

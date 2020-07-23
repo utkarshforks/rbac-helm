@@ -34,6 +34,15 @@
     - name: Deploy cert-manager
       shell: |
         kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.2/cert-manager.yaml
+    - name: Create a configmap for test
+      shell: |
+        cat <<EOF | kubectl apply -f-
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: test
+        data:
+          key: value
   roles:
     - name: helm-template
       helm_release_name: rbac
@@ -132,3 +141,9 @@
         - certificates
         - orders
         - challenges
+
+    # List and get configmap
+    - name: Ensure listing configmaps works
+      shell: kubectl --context=test get configmaps
+    - name: Ensure getting a configmap works
+      shell: kubectl --context=test get configmap test
