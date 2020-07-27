@@ -21,28 +21,28 @@ rules:
 # List and get configmap, pv & pvc and namespaces, nodes & pods & pod logs
 - apiGroups: [""]
   resources: ["configmaps", "nodes", "namespaces", "persistentvolumeclaims", "persistentvolumes", "pods", "pods/log"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # List all get applications
 - apiGroups: ["apps"]
   resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # List and get hpa
 - apiGroups: ["autoscaling"]
   resources: ["horizontalpodautoscalers"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # View orders and challenges
 - apiGroups: ["acme.cert-manager.io"]
   resources: ["challenges", "orders"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # View certificates
 - apiGroups: ["cert-manager.io"]
   resources: ["certificates"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # View resource usage for nodes and pods
 - apiGroups: ["metrics.k8s.io"]
   resources: ["nodes", "pods"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
 # View storageclasses
 - apiGroups: ["storage.k8s.io"]
   resources: ["storageclasses"]
-  verbs: ["get", "list"]
+  verbs: ["get", "list", "watch"]
