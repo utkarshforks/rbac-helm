@@ -46,3 +46,7 @@ rules:
 - apiGroups: ["storage.k8s.io"]
   resources: ["storageclasses"]
   verbs: ["get", "list", "watch"]
+# View podmonitors and prometheusrules
+- apiGroups: ["monitoring.coreos.com"]
+  resources: ["podmonitors", "prometheusrules"]
+  verbs: ["get", "list", "watch"]
