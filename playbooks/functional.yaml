@@ -147,3 +147,9 @@
       shell: kubectl --context=test get configmaps
     - name: Ensure getting a configmap works
       shell: kubectl --context=test get configmap test
+
+    # List and get service
+    - name: Ensure listing services works
+      shell: kubectl --context=test get services
+    - name: Ensure getting a configmap works
+      shell: kubectl --context=test get service kubernetes
